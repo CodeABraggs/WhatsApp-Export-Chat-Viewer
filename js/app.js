@@ -52,6 +52,14 @@
   const isMobile = () => matchMedia('(max-width: 767px)').matches;
   const extOf = n => (String(n).split('.').pop() || '').toLowerCase();
   const num = n => Number(n || 0).toLocaleString();
+
+  // Anonymous product analytics (see js/analytics.js). Never send chat content, names or file names.
+  function track(event, props) {
+    try { if (typeof window.plausible === 'function') window.plausible(event, props ? { props } : undefined); } catch (e) { /* ignore */ }
+  }
+  const sizeBucket = n => n < 1e3 ? '<1k' : n < 1e4 ? '1k-10k' : n < 1e5 ? '10k-100k' : '100k+';
+
+  const MAX_ZIP_BYTES = 2 * 1024 ** 3; // browsers can't hold larger archives in memory
   const escapeRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
   function hash(s) {
@@ -1492,7 +1500,11 @@
 
   /* ---------- file loading ---------- */
   async function openZip(file) {
-    if (!window.JSZip) throw new Error('ZIP support didn’t load (are you offline?). Extract the zip and open the .txt file instead.');
+    if (!window.JSZip) throw new Error('ZIP support didn’t load. Reload the page, or extract the zip and open the folder instead.');
+    if (file.size > MAX_ZIP_BYTES) {
+      throw new Error(file.name + ' is ' + (file.size / 1024 ** 3).toFixed(1) + ' GB, too large for a browser to unzip. Extract it on your device and open the folder instead.');
+    }
+    if (file.size > 300 * 1024 ** 2) busy(true, 'Unzipping ' + fmtSize(file.size) + '… this can take a moment');
     const zip = await window.JSZip.loadAsync(file);
     const base = e => e.name.split('/').pop();
     const entries = Object.values(zip.files).filter(e => !e.dir && !/(^|\/)__MACOSX\//.test(e.name) && !/^\./.test(base(e)));
@@ -1516,6 +1528,7 @@
     const txts = files.filter(f => /\.txt$/i.test(f.name) && !/^\./.test(f.name));
     const rest = files.filter(f => !zips.includes(f) && !txts.includes(f));
     let opened = null;
+    const source = zips.length ? 'zip' : txts.length && rest.length ? 'folder' : txts.length ? 'txt' : 'media';
     busy(true, files.length > 1 ? 'Reading ' + files.length + ' files…' : 'Opening ' + files[0].name + '…');
     try {
       for (const z of zips) opened = await openZip(z);
@@ -1532,11 +1545,15 @@
       }
     } catch (err) {
       console.error(err);
-      toast(err && err.message ? err.message : 'Could not open that file', { error: true, ms: 6000 });
+      toast(err && err.message ? err.message : 'Could not open that file', { error: true, ms: 7000 });
+      track('Open Failed', { source });
     } finally {
       busy(false);
     }
-    if (opened) openChat(opened);
+    if (opened) {
+      openChat(opened);
+      track('Chat Opened', { source, messages: sizeBucket(opened.msgs.length), group: String(opened.isGroup) });
+    }
   }
 
   function addMedia(chat, files) {
@@ -1570,6 +1587,12 @@
   }
 
   ui.fileInput.addEventListener('change', () => { handleFiles(ui.fileInput.files); ui.fileInput.value = ''; });
+  const folderInput = $('folderInput');
+  const canPickFolder = 'webkitdirectory' in folderInput;
+  const pickFolder = () => folderInput.click();
+  folderInput.addEventListener('change', () => { handleFiles(folderInput.files); folderInput.value = ''; });
+  $('folderBtn').hidden = !canPickFolder;
+  $('folderBtn').addEventListener('click', pickFolder);
   ui.mediaInput.addEventListener('change', () => {
     if (state.active && ui.mediaInput.files.length) addMedia(state.active, Array.from(ui.mediaInput.files));
     ui.mediaInput.value = '';
@@ -1588,6 +1611,7 @@
       const chat = addChat(d.text, d.name, mediaMap(d.files));
       busy(false);
       openChat(chat);
+      track('Demo Opened');
     } catch (err) {
       console.error(err);
       busy(false);
@@ -1643,6 +1667,7 @@
     const dark = effectiveTheme() === 'dark';
     showMenu(e.currentTarget, [
       { icon: 'upload', label: 'Open chat export', run: () => ui.fileInput.click() },
+      canPickFolder ? { icon: 'doc', label: 'Open extracted folder', run: pickFolder } : null,
       { icon: 'chat', label: 'Try a demo chat', run: loadDemo },
       { icon: dark ? 'sun' : 'moon', label: dark ? 'Light mode' : 'Dark mode', run: toggleTheme },
       { icon: 'help', label: 'How to export a chat', run: showHelp }
@@ -1680,6 +1705,30 @@
       openDrawer('search');
     }
   });
+
+  /* ---------- errors, offline support, installed-app file opening ---------- */
+  let lastErrorToast = 0;
+  function unexpected(err) {
+    console.error(err);
+    busy(false);
+    if (Date.now() - lastErrorToast < 5000) return;
+    lastErrorToast = Date.now();
+    toast('Something went wrong. If it keeps happening, reload the page.', { error: true, ms: 6000 });
+  }
+  window.addEventListener('error', e => { if (e.error) unexpected(e.error); });
+  window.addEventListener('unhandledrejection', e => unexpected(e.reason));
+
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(err => console.warn('Offline mode unavailable:', err)));
+  }
+
+  // When installed as an app, .zip/.txt files can be opened with it directly (see manifest file_handlers).
+  if ('launchQueue' in window) {
+    window.launchQueue.setConsumer(async params => {
+      if (!params.files || !params.files.length) return;
+      handleFiles(await Promise.all(params.files.map(h => h.getFile())));
+    });
+  }
 
   /* ---------- init ---------- */
   updateThemeIcon();

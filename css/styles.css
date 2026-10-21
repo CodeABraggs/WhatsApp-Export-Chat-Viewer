@@ -717,3 +717,19 @@ mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 1
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* ===== Landing page: FAQ, footer, no-JS notice ===== */
+.faq { text-align: left; margin-top: 30px; }
+.faq h2 { font-size: 15px; font-weight: 600; color: var(--text); text-align: center; margin: 0 0 12px; }
+.faq details { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; }
+.faq summary { cursor: pointer; padding: 12px 16px; font-size: 14px; font-weight: 500; color: var(--text); list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; color: var(--text-3); font-size: 18px; line-height: 1; }
+.faq details[open] summary::after { content: "−"; }
+.faq details p { margin: 0; padding: 0 16px 14px; color: var(--text-2); font-size: 13.5px; line-height: 1.6; }
+.faq b { color: var(--text); font-weight: 600; }
+.privacy { flex-direction: column; gap: 6px; }
+.privacy > span { display: flex; align-items: center; gap: 6px; }
+.privacy .legal { font-size: 12px; color: var(--text-3); }
+.privacy a { color: inherit; }
+.noscript { background: var(--note); color: var(--note-text); border-radius: 10px; padding: 12px 16px; font-size: 14px; }

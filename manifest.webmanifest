@@ -1,0 +1,30 @@
+{
+  "id": "./",
+  "name": "WhatsApp Chat Viewer",
+  "short_name": "Chat Viewer",
+  "description": "Open exported WhatsApp chats (.zip or .txt) and read them like the real app. Private: nothing is uploaded.",
+  "lang": "en",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f0f2f5",
+  "theme_color": "#00a884",
+  "categories": ["utilities", "productivity"],
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "screenshots": [
+    { "src": "docs/screenshots/desktop-light.png", "sizes": "1280x800", "type": "image/png", "form_factor": "wide", "label": "Reading an exported group chat" }
+  ],
+  "file_handlers": [
+    {
+      "action": "./",
+      "accept": {
+        "application/zip": [".zip"],
+        "text/plain": [".txt"]
+      }
+    }
+  ]
+}

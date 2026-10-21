@@ -23,6 +23,7 @@
 - Light and dark modes
 - Works on desktop and mobile
 - Runs entirely in your browser
+- Works offline and can be installed as an app
 
 ## How to use
 
@@ -52,6 +53,8 @@ For the best results, export the chat with media included.
 ## Privacy
 
 Your chat files are processed locally in your browser and are **never uploaded** to a server. Do not commit private chats, photos, or other personal files to this repository.
+
+The site counts visits with [Plausible](https://plausible.io), a cookie-free analytics service that collects no personal data. Only page views and anonymous events such as "Chat Opened" (with the file type) are recorded. Message text, names and files are never sent.
 
 ## Run locally
 

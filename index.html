@@ -3,13 +3,70 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://plausible.io; connect-src 'self' blob: https://plausible.io; img-src 'self' data: blob:; media-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; manifest-src 'self'; worker-src 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <title>WhatsApp Chat Viewer: Open Exported Chats Online, Free &amp; Private</title>
+  <meta name="description" content="Free WhatsApp chat viewer: open an exported chat (.zip or .txt) and read it like the real app, with photos, voice notes and search. Nothing is uploaded.">
+  <link rel="canonical" href="https://codeabraggs.github.io/WhatsApp-Export-Chat-Viewer/">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="author" content="CodeABraggs">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="WhatsApp Chat Viewer">
+  <meta property="og:title" content="WhatsApp Chat Viewer: Open Exported Chats Online">
+  <meta property="og:description" content="Read exported WhatsApp chats just like in the app, with photos, voice notes, search and dark mode. Free, private, nothing uploaded.">
+  <meta property="og:url" content="https://codeabraggs.github.io/WhatsApp-Export-Chat-Viewer/">
+  <meta property="og:image" content="https://codeabraggs.github.io/WhatsApp-Export-Chat-Viewer/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="WhatsApp Chat Viewer showing an exported group chat">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="WhatsApp Chat Viewer: Open Exported Chats Online">
+  <meta name="twitter:description" content="Read exported WhatsApp chats just like in the app. Free, private, nothing uploaded.">
+  <meta name="twitter:image" content="https://codeabraggs.github.io/WhatsApp-Export-Chat-Viewer/assets/og-image.png">
+  <meta name="twitter:image:alt" content="WhatsApp Chat Viewer showing an exported group chat">
+
   <meta name="theme-color" content="#f0f2f5" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#202c33" media="(prefers-color-scheme: dark)">
-  <title>WhatsApp Chat Viewer: read exported chats like the real app</title>
-  <meta name="description" content="Open an exported WhatsApp chat (.zip or .txt) and read it in a familiar WhatsApp-style interface with photos, videos, voice notes, search and dark mode. 100% private: everything runs in your browser.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2300a884'/%3E%3Cpath d='M9 9h14a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-8l-5 4v-4H9a3 3 0 0 1-3-3v-7a3 3 0 0 1 3-3z' fill='%23fff'/%3E%3C/svg%3E">
+  <meta name="application-name" content="Chat Viewer">
+  <meta name="apple-mobile-web-app-title" content="Chat Viewer">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/icon-192.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "WhatsApp Chat Viewer",
+    "url": "https://codeabraggs.github.io/WhatsApp-Export-Chat-Viewer/",
+    "description": "Open an exported WhatsApp chat (.zip or .txt) and read it in a WhatsApp-style interface with photos, videos, voice notes, polls, search and dark mode. Files are processed in the browser and never uploaded.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any (web browser)",
+    "browserRequirements": "Requires JavaScript",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "image": "https://codeabraggs.github.io/WhatsApp-Export-Chat-Viewer/assets/og-image.png",
+    "screenshot": "https://codeabraggs.github.io/WhatsApp-Export-Chat-Viewer/docs/screenshots/desktop-light.png",
+    "featureList": [
+      "Open WhatsApp .zip and .txt exports from Android and iPhone",
+      "Photos, videos, voice notes, stickers, documents, polls and locations",
+      "Search messages and jump to any date",
+      "Light and dark mode",
+      "Works offline; nothing is uploaded"
+    ],
+    "author": { "@type": "Person", "name": "CodeABraggs", "url": "https://github.com/CodeABraggs" }
+  }
+  </script>
+
   <link rel="stylesheet" href="css/styles.css">
-  <script>try { var t = localStorage.getItem('cev-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script src="js/theme.js"></script>
+  <script src="js/analytics.js"></script>
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -72,7 +129,7 @@
 
     <aside class="sidebar" aria-label="Chats">
       <header class="side-head">
-        <h1 class="side-title">Chats</h1>
+        <h2 class="side-title">Chats</h2>
         <div class="actions">
           <button class="icon-btn" id="importBtn" type="button" title="Open a chat export" aria-label="Open a chat export"><svg class="ic"><use href="#i-newchat"/></svg></button>
           <button class="icon-btn" id="sideMenuBtn" type="button" title="Menu" aria-label="Menu"><svg class="ic"><use href="#i-more"/></svg></button>
@@ -128,8 +185,10 @@
           </div>
           <div class="welcome-actions">
             <button class="btn primary" id="pickBtn" type="button">Choose file</button>
+            <button class="btn" id="folderBtn" type="button">Open folder</button>
             <button class="btn" id="demoBtn" type="button">Try a demo chat</button>
           </div>
+          <noscript><p class="noscript">This viewer runs entirely in your browser and needs JavaScript. Please enable it to open your chat.</p></noscript>
 
           <details class="howto">
             <summary>How do I export a chat from WhatsApp?</summary>
@@ -154,8 +213,39 @@
               </div>
             </div>
           </details>
+
+          <section class="faq" aria-labelledby="faqTitle">
+            <h2 id="faqTitle">Frequently asked questions</h2>
+            <details>
+              <summary>Is it safe to open my WhatsApp chat here?</summary>
+              <p>Yes. The file is read by your own browser and is never uploaded to any server. There is no account and no chat data leaves your device. You can even use the viewer offline.</p>
+            </details>
+            <details>
+              <summary>How do I view an exported WhatsApp chat with photos and voice notes?</summary>
+              <p>Export the chat with <b>Include media</b> (Android) or <b>Attach Media</b> (iPhone), then open the resulting <b>.zip</b> here. Photos, videos, voice notes, stickers and documents appear inside the conversation, just like in WhatsApp.</p>
+            </details>
+            <details>
+              <summary>Can I open a WhatsApp .txt export?</summary>
+              <p>Yes. Open the <b>.txt</b> file on its own to read the messages, or open the extracted folder to include its media files too.</p>
+            </details>
+            <details>
+              <summary>Does it work with both Android and iPhone exports?</summary>
+              <p>Yes. Exports from Android and iPhone are supported in many languages, with 12- or 24-hour clocks and any date format.</p>
+            </details>
+            <details>
+              <summary>Can I search an old WhatsApp chat or jump to a date?</summary>
+              <p>Yes. Use search to find any message, jump to a specific date, or drag the scroll bar to move through years of history in seconds, even in chats with more than 100,000 messages.</p>
+            </details>
+            <details>
+              <summary>Is this an official WhatsApp product?</summary>
+              <p>No. It’s a free, independent, open-source tool for reading your own chat exports. It is not affiliated with WhatsApp or Meta.</p>
+            </details>
+          </section>
         </div>
-        <p class="privacy"><svg class="ic"><use href="#i-lock"/></svg> Your chats are processed on this device and never uploaded</p>
+        <footer class="privacy">
+          <span><svg class="ic"><use href="#i-lock"/></svg> Your chats are processed on this device and never uploaded</span>
+          <span class="legal">Not affiliated with WhatsApp or Meta · <a href="https://github.com/CodeABraggs/WhatsApp-Export-Chat-Viewer" target="_blank" rel="noopener">Source on GitHub</a></span>
+        </footer>
       </section>
 
       <section class="chat" id="chat" hidden>
@@ -215,6 +305,7 @@
 
   <input type="file" id="fileInput" accept=".zip,.txt,application/zip,text/plain" multiple hidden>
   <input type="file" id="mediaInput" multiple hidden>
+  <input type="file" id="folderInput" webkitdirectory multiple hidden>
 
   <div class="lightbox" id="lightbox" hidden>
     <div class="lb-top">
@@ -254,7 +345,7 @@
   </div>
   <div class="toasts" id="toasts" aria-live="polite"></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+  <script src="js/vendor/jszip.min.js" defer></script>
   <script src="js/parser.js" defer></script>
   <script src="js/format.js" defer></script>
   <script src="js/demo.js" defer></script>
